@@ -18,9 +18,16 @@ def remove_unwanted_arrays(data):
 # Step 1: If the "geometries" key exists, clean its contents and save the result
 if 'geometries' in data:
     geometries_data = remove_unwanted_arrays(data['geometries'])
-    # Save intermediate file without unwanted arrays
     with open('geometry.geometries.json', 'w') as new_file:
         json.dump(geometries_data, new_file, indent=4)
+
+# ✅ NEW: Extract materials if present
+if 'materials' in data:
+    with open('geometry.materials.json', 'w') as mat_file:
+        json.dump(data['materials'], mat_file, indent=4)
+    print(f"Materials extracted: {len(data['materials'])} material(s) saved to geometry.materials.json")
+else:
+    print("No materials found in geometry.json")
 
 # Load the intermediate file for further filtering
 with open('geometry.geometries.json', 'r') as file:
@@ -38,6 +45,7 @@ def remove_large_number_keys(data):
 # Step 2: Filter the data by removing numeric keys > 6
 filtered_geometries = remove_large_number_keys(geometries_data)
 
-# Save the fully processed file
 with open('geometry.geometries.filtered.json', 'w') as filtered_file:
     json.dump(filtered_geometries, filtered_file, indent=4)
+
+print("Geometry filtering complete.")
